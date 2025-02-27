@@ -1,4 +1,4 @@
-import { range } from "../utils/range"
+import { range } from "../utils/collections/range"
 
 export type Classification = {
    lb: number,

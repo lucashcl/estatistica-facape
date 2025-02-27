@@ -1,5 +1,8 @@
 import { classify, type Classification } from "./lib/classify"
+import { isolateColumn } from "./utils/collections/isolateColumn"
+import { formatNumber } from "./utils/formatNumber"
 import { loadCSV } from "./utils/loadCSV"
+import { printTable } from "./utils/printTable"
 
 const format = (classifications: Classification[]) => {
    const total = classifications.reduce((acc, { items }) => acc + items.length, 0)
@@ -11,31 +14,25 @@ const format = (classifications: Classification[]) => {
          .slice(0, index + 1)
          .reduce((acc, { items }) => acc + items.length, 0)
       return {
-         "classe": `${lb}-${ub}`,
+         "classe": `${formatNumber(lb)}-${formatNumber(ub)}`,
          // Frequência absoluta (Fi)
          "F(i)": Fi,
          // Frequência relativa (fi)
-         "f(i)": f,
+         "f(i)": f.toFixed(3),
          "%": `${(f * 100).toFixed()}%`,
          // Média da classe (xi)
-         "xi": xi,
+         "xi": formatNumber(xi),
          // Frequência acumulada (Fac)
          "Fac": Fac
       }
    })
 }
 
-const media = (classifications: Classification[]) => {
-   const total = classifications.reduce((acc, { items }) => acc + items.length, 0)
-   return classifications.reduce((acc, { lb, ub, items }) => {
-      const Fi = items.length
-      const xi = (lb + ub) / 2
-      return acc + xi * Fi / total
-   }, 0)
-}
-
-const data = await loadCSV("data.csv")
-const classifications = classify(data)
-console.log(`Média: ${media(classifications)}`)
-
-console.table(format(classifications))
+const data = await loadCSV("Extrato.csv", ";")
+printTable(data)
+const values = isolateColumn(data, "Valor").map(Number.parseFloat)
+const classifications = classify(values)
+printTable(format(classifications))
+//const ages = isolateColumn(data, "age").map(Number)
+//const classifications = classify(ages)
+//printTable(format(classifications))
