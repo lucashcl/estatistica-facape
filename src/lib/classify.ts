@@ -3,7 +3,7 @@ import { range } from "../utils/collections/range"
 export type Classification = {
    lb: number,
    ub: number,
-   items: number[]
+   fi: number
 }
 
 export const classify = (items: number[]) => {
@@ -24,7 +24,7 @@ export const classify = (items: number[]) => {
          return {
             lb: lbi,
             ub: ubi,
-            items: items.filter(it => it >= lbi && it < ubi)
+            fi: items.filter(it => it >= lbi && it < ubi).length
          }
       })
 }
